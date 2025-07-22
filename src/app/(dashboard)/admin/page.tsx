@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 
 interface Stats {
   totalEquipos: number;
+  equiposActivos: number;
+  equiposMantenimiento: number;
+  equiposFueraServicio: number;
   ordenesCompletadas: number;
   ordenesPendientes: number;
   usuariosActivos: number;
@@ -13,6 +16,11 @@ interface Stats {
     tiempo: string;
     tipo: string;
   }>;
+  debug?: {
+    total_equipos_bd: number;
+    ordenes_en_bd: string;
+    usuarios_en_bd: number;
+  };
 }
 
 export default function AdminDashboard() {
@@ -135,10 +143,10 @@ export default function AdminDashboard() {
             <div className="ml-5 w-0 flex-1">
               <dl>
                 <dt className="text-sm font-medium text-gray-500 truncate">
-                  Órdenes Completadas
+                  Equipos Activos
                 </dt>
                 <dd className="text-lg font-medium text-gray-900">
-                  {stats?.ordenesCompletadas || 0}
+                  {stats?.equiposActivos || 0}
                 </dd>
               </dl>
             </div>
@@ -155,10 +163,10 @@ export default function AdminDashboard() {
             <div className="ml-5 w-0 flex-1">
               <dl>
                 <dt className="text-sm font-medium text-gray-500 truncate">
-                  Pendientes
+                  En Mantenimiento
                 </dt>
                 <dd className="text-lg font-medium text-gray-900">
-                  {stats?.ordenesPendientes || 0}
+                  {stats?.equiposMantenimiento || 0}
                 </dd>
               </dl>
             </div>
@@ -186,6 +194,46 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      {/* Resumen de equipos por estado */}
+      {stats && (
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Estado de Equipos
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">
+                {stats.equiposActivos}
+              </div>
+              <div className="text-sm text-green-700">Activos</div>
+              <div className="text-xs text-gray-500">
+                {stats.totalEquipos > 0 ? Math.round((stats.equiposActivos / stats.totalEquipos) * 100) : 0}% del total
+              </div>
+            </div>
+            
+            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+              <div className="text-2xl font-bold text-yellow-600">
+                {stats.equiposMantenimiento}
+              </div>
+              <div className="text-sm text-yellow-700">En Mantenimiento</div>
+              <div className="text-xs text-gray-500">
+                {stats.totalEquipos > 0 ? Math.round((stats.equiposMantenimiento / stats.totalEquipos) * 100) : 0}% del total
+              </div>
+            </div>
+            
+            <div className="text-center p-4 bg-red-50 rounded-lg">
+              <div className="text-2xl font-bold text-red-600">
+                {stats.equiposFueraServicio}
+              </div>
+              <div className="text-sm text-red-700">Fuera de Servicio</div>
+              <div className="text-xs text-gray-500">
+                {stats.totalEquipos > 0 ? Math.round((stats.equiposFueraServicio / stats.totalEquipos) * 100) : 0}% del total
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Acciones rápidas */}
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -196,7 +244,7 @@ export default function AdminDashboard() {
             <div className="text-center">
               <div className="text-2xl mb-2">🆕</div>
               <div className="font-medium text-gray-900">Nuevo Equipo</div>
-              <div className="text-sm text-gray-500">Registrar equipo médico</div>
+              <div className="text-sm text-gray-700">Registrar equipo médico</div>
             </div>
           </button>
           
@@ -209,13 +257,21 @@ export default function AdminDashboard() {
           </button>
           
           <button 
-            onClick={() => window.location.reload()}
-            className="p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+            onClick={() => {
+              setLoading(true);
+              window.location.reload();
+            }}
+            disabled={loading}
+            className="p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors disabled:opacity-50"
           >
             <div className="text-center">
-              <div className="text-2xl mb-2">🔄</div>
-              <div className="font-medium text-gray-900">Actualizar</div>
-              <div className="text-sm text-gray-500">Refrescar estadísticas</div>
+              <div className="text-2xl mb-2">{loading ? '⏳' : '🔄'}</div>
+              <div className="font-medium text-gray-900">
+                {loading ? 'Cargando...' : 'Actualizar'}
+              </div>
+              <div className="text-sm text-gray-500">
+                {loading ? 'Obteniendo datos...' : 'Refrescar estadísticas reales'}
+              </div>
             </div>
           </button>
         </div>
@@ -223,9 +279,16 @@ export default function AdminDashboard() {
 
       {/* Actividad reciente - DATOS REALES */}
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
-          Actividad Reciente
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-gray-900">
+            Actividad Reciente
+          </h3>
+          {stats?.debug && (
+            <div className="text-xs text-gray-400">
+              BD: {stats.debug.total_equipos_bd} equipos, {stats.debug.usuarios_en_bd} usuarios
+            </div>
+          )}
+        </div>
         <div className="space-y-3">
           {stats?.actividadReciente?.length ? (
             stats.actividadReciente.map((actividad) => (

@@ -23,35 +23,61 @@ export default function Sidebar() {
     }
   }, []);
 
-  // Menú según rol
+  // Menú según rol - COMPLETAMENTE DINÁMICO
   const getMenuItems = () => {
+    if (!user) return [];
+
     const baseItems = [
-      { href: '/general', label: 'Dashboard', icon: '🏠' },
-      { href: '/ordenes', label: 'Órdenes de Trabajo', icon: '📋' },
-      { href: '/equipos', label: 'Equipos', icon: '🔧' },
+      { href: '/general', label: 'Dashboard', icon: '🏠' }
     ];
 
-    if (user?.rol === 'administrador') {
+    if (user.rol === 'administrador') {
       return [
         { href: '/admin', label: 'Panel Admin', icon: '👨‍💼' },
         ...baseItems,
+        { href: '/ordenes', label: 'Órdenes de Trabajo', icon: '📋' },
+        { href: '/equipos', label: 'Equipos', icon: '🔧' },
         { href: '/usuarios', label: 'Usuarios', icon: '👥' },
         { href: '/reportes', label: 'Reportes', icon: '📊' },
         { href: '/configuracion', label: 'Configuración', icon: '⚙️' },
       ];
     }
 
-    if (user?.rol === 'tecnico') {
+    if (user.rol === 'tecnico') {
       return [
         { href: '/tecnico', label: 'Dashboard Técnico', icon: '🔧' },
         ...baseItems,
+        { href: '/ordenes', label: 'Órdenes de Trabajo', icon: '📋' },
+        { href: '/equipos', label: 'Equipos', icon: '🔧' },
         { href: '/preventivos', label: 'Preventivos', icon: '🛡️' },
         { href: '/correctivos', label: 'Correctivos', icon: '🔨' },
       ];
     }
 
+    if (user.rol === 'usuario') {
+      // Usuario SOLO ve el dashboard general - SIN OTRAS OPCIONES
+      return [
+        { href: '/general', label: 'Mis Solicitudes', icon: '📝' }
+      ];
+    }
+
     return baseItems;
   };
+
+  if (!user) {
+    return (
+      <div className="bg-gray-900 text-white w-64 min-h-screen p-4">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-700 rounded"></div>
+          <div className="space-y-2">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="h-10 bg-gray-700 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-900 text-white w-64 min-h-screen p-4">
@@ -85,6 +111,16 @@ export default function Sidebar() {
           </Link>
         ))}
       </nav>
+
+      {/* Información del rol */}
+      <div className="mt-8 p-3 bg-gray-800 rounded-lg">
+        <div className="text-xs text-gray-400 uppercase tracking-wide">Rol Actual</div>
+        <div className="text-sm font-medium text-white capitalize">
+          {user.rol === 'administrador' && '👨‍💼 Administrador'}
+          {user.rol === 'tecnico' && '🔧 Técnico'}
+          {user.rol === 'usuario' && '👤 Usuario Final'}
+        </div>
+      </div>
 
       {/* Footer */}
       <div className="absolute bottom-4 left-4 right-4">

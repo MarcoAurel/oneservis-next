@@ -29,7 +29,7 @@ export default function DashboardLayout({
       const userData = JSON.parse(user);
       const currentPath = pathname;
 
-      // Verificar permisos de ruta según rol
+      // Verificar permisos de ruta según rol - LÓGICA CORREGIDA
       const hasPermission = checkRoutePermission(userData.rol, currentPath);
       
       if (!hasPermission) {
@@ -47,25 +47,70 @@ export default function DashboardLayout({
     }
   }, [router, pathname]);
 
-  // Función para verificar permisos de ruta - ARREGLADA
+  // Función para verificar permisos de ruta - COMPLETAMENTE CORREGIDA
   function checkRoutePermission(userRole: string, path: string): boolean {
+    // Definir rutas específicas para cada rol
     const rolePermissions = {
-      'administrador': ['/admin', '/tecnico', '/general'],
-      'tecnico': ['/tecnico', '/general'],
-      'usuario': ['/general']
+      'administrador': {
+        // El admin puede acceder a TODO
+        allowedPaths: [
+          '/admin',           // Panel Admin específico
+          '/general',         // Dashboard general  
+          '/ordenes',         // Órdenes de trabajo
+          '/equipos',         // Gestión de equipos
+          '/usuarios',        // Gestión de usuarios
+          '/reportes',        // Reportes y estadísticas
+          '/configuracion',   // Configuración del sistema
+          '/tecnico'          // También puede ver vista técnica
+        ],
+        defaultPath: '/admin'
+      },
+      'tecnico': {
+        // El técnico accede a su área y funciones operativas
+        allowedPaths: [
+          '/tecnico',         // Dashboard técnico
+          '/general',         // Dashboard general
+          '/ordenes',         // Ver y gestionar órdenes
+          '/equipos',         // Ver equipos (sin crear/eliminar)
+          '/preventivos',     // Mantenimientos preventivos
+          '/correctivos'      // Mantenimientos correctivos
+        ],
+        defaultPath: '/tecnico'
+      },
+      'usuario': {
+        // Usuario final SOLO dashboard general - sin acceso a otras secciones
+        allowedPaths: [
+          '/general'          // ÚNICAMENTE dashboard general
+        ],
+        defaultPath: '/general'
+      }
     };
 
-    const allowedPaths = rolePermissions[userRole as keyof typeof rolePermissions] || [];
+    const userPermissions = rolePermissions[userRole as keyof typeof rolePermissions];
     
-    // ARREGLO: startsWith (no startWith)
-    return allowedPaths.some(allowedPath => path.startsWith(allowedPath));
+    if (!userPermissions) {
+      console.log(`Rol no reconocido: ${userRole}`);
+      return false;
+    }
+
+    // Verificar si la ruta actual está permitida
+    const isAllowed = userPermissions.allowedPaths.some(allowedPath => 
+      path.startsWith(allowedPath)
+    );
+
+    if (!isAllowed) {
+      console.log(`Acceso denegado para rol ${userRole} a ruta ${path}`);
+      console.log(`Rutas permitidas:`, userPermissions.allowedPaths);
+    }
+
+    return isAllowed;
   }
 
-  // Función para obtener ruta por defecto según rol
+  // Función para obtener ruta por defecto según rol - MEJORADA
   function getDefaultRouteForRole(role: string): string {
     const defaultRoutes = {
       'administrador': '/admin',
-      'tecnico': '/tecnico',
+      'tecnico': '/tecnico', 
       'usuario': '/general'
     };
 
