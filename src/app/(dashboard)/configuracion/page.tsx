@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // Interfaces de configuración
 interface ConfiguracionSistema {
@@ -71,7 +71,7 @@ export default function ConfiguracionPage() {
   ];
 
   // Función corregida para manejar cambios de input - TIPADO ARREGLADO
-  const handleInputChange = (section: keyof ConfiguracionSistema, field: string, value: any) => {
+  const handleInputChange = (section: keyof ConfiguracionSistema, field: string, value: string | number | boolean | { inicio?: string; fin?: string }) => {
     setConfig(prev => {
       const newConfig = { ...prev };
       
@@ -87,7 +87,7 @@ export default function ConfiguracionPage() {
           [field]: value
         };
       } else if (section === 'mantenimiento') {
-        if (field === 'horasLaborales') {
+        if (field === 'horasLaborales' && typeof value === 'object') {
           newConfig.mantenimiento = {
             ...newConfig.mantenimiento,
             horasLaborales: {

@@ -13,13 +13,26 @@ interface MisSolicitudes {
   fechaEstimada?: string;
 }
 
+interface User {
+  nombre?: string;
+  apellido?: string;
+  email?: string;
+  rol?: string;
+}
+
+interface NewSolicitudForm {
+  descripcion: string;
+  prioridad: 'baja' | 'media' | 'alta' | 'critica';
+  equipoCodigo: string;
+}
+
 export default function GeneralDashboard() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [solicitudes, setSolicitudes] = useState<MisSolicitudes[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newSolicitud, setNewSolicitud] = useState({
+  const [newSolicitud, setNewSolicitud] = useState<NewSolicitudForm>({
     descripcion: '',
-    prioridad: 'media' as const,
+    prioridad: 'media',
     equipoCodigo: ''
   });
 
@@ -27,7 +40,11 @@ export default function GeneralDashboard() {
     // Obtener datos del usuario
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser) as User);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
     }
 
     // Simular solicitudes del usuario
@@ -311,7 +328,10 @@ export default function GeneralDashboard() {
                 </label>
                 <select
                   value={newSolicitud.prioridad}
-                  onChange={(e) => setNewSolicitud(prev => ({ ...prev, prioridad: e.target.value as any }))}
+                  onChange={(e) => setNewSolicitud(prev => ({ 
+                    ...prev, 
+                    prioridad: e.target.value as NewSolicitudForm['prioridad']
+                  }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900"
                 >
                   <option value="baja">Baja</option>
