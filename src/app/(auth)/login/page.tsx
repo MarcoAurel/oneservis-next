@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,10 +46,19 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-orange-500">
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-        {/* Logo */}
+        {/* Logo - SECCIÓN MODIFICADA */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-orange-600 mb-2">One</h1>
-          <p className="text-gray-600 uppercase tracking-widest text-sm">SERVIS</p>
+          <div className="mb-4">
+            <Image
+              src="/onservis-logo.jpg"
+              alt="OneServis Logo"
+              width={280}
+              height={180}
+              className="mx-auto object-contain"
+              priority
+            />
+          </div>
+          <p className="text-gray-600 uppercase tracking-widest text-md">SISTEMA DE GESTIÓN</p>
         </div>
 
         {/* Form */}

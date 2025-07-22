@@ -163,13 +163,15 @@ export default function NuevaOrdenPage() {
                 name="equipoCodigo"
                 value={formData.equipoCodigo}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900 ${
                   errors.equipoCodigo ? 'border-red-300' : 'border-gray-300'
                 }`}
               >
-                <option value="">Seleccionar equipo</option>
+                <option value="" className="text-gray-500">Seleccionar equipo</option>
                 {equiposDisponibles.map(codigo => (
-                  <option key={codigo} value={codigo}>{codigo}</option>
+                  <option key={codigo} value={codigo} className="text-gray-900 bg-white">
+                    {codigo}
+                  </option>
                 ))}
               </select>
               {errors.equipoCodigo && <p className="text-red-600 text-sm mt-1">{errors.equipoCodigo}</p>}
@@ -187,16 +189,16 @@ export default function NuevaOrdenPage() {
                 name="tipoTrabajo"
                 value={formData.tipoTrabajo}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900"
               >
-                <option value="correctivo">Mantenimiento Correctivo</option>
-                <option value="preventivo">Mantenimiento Preventivo</option>
-                <option value="instalacion">Instalación</option>
-                <option value="retiro">Retiro de Equipo</option>
+                <option value="correctivo" className="text-gray-900 bg-white">Mantenimiento Correctivo</option>
+                <option value="preventivo" className="text-gray-900 bg-white">Mantenimiento Preventivo</option>
+                <option value="instalacion" className="text-gray-900 bg-white">Instalación</option>
+                <option value="retiro" className="text-gray-900 bg-white">Retiro de Equipo</option>
               </select>
             </div>
 
-            {/* Prioridad */}
+            {/* Prioridad - ESTILOS COMPLETAMENTE CORREGIDOS */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Prioridad
@@ -205,12 +207,20 @@ export default function NuevaOrdenPage() {
                 name="prioridad"
                 value={formData.prioridad}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900"
               >
-                <option value="baja">🔵 Baja - No urgente</option>
-                <option value="media">🟡 Media - Normal</option>
-                <option value="alta">🟠 Alta - Urgente</option>
-                <option value="critica">🔴 Crítica - Inmediata</option>
+                <option value="baja" className="text-gray-900 bg-white">
+                  🔵 Baja - No urgente
+                </option>
+                <option value="media" className="text-gray-900 bg-white">
+                  🟡 Media - Normal
+                </option>
+                <option value="alta" className="text-gray-900 bg-white">
+                  🟠 Alta - Urgente
+                </option>
+                <option value="critica" className="text-gray-900 bg-white">
+                  🔴 Crítica - Inmediata
+                </option>
               </select>
               <p className="text-sm text-gray-500 mt-1">
                 {formData.prioridad === 'critica' && 'Atención requerida en menos de 4 horas'}
@@ -231,7 +241,7 @@ export default function NuevaOrdenPage() {
                 value={formData.fechaVencimiento}
                 onChange={handleInputChange}
                 min={today}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900"
               />
             </div>
           </div>
@@ -252,7 +262,7 @@ export default function NuevaOrdenPage() {
                 onChange={handleInputChange}
                 rows={4}
                 placeholder="Describe el problema o trabajo a realizar de manera detallada..."
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900 placeholder-gray-500 resize-none ${
                   errors.descripcion ? 'border-red-300' : 'border-gray-300'
                 }`}
               />
@@ -273,7 +283,7 @@ export default function NuevaOrdenPage() {
                 onChange={handleInputChange}
                 rows={3}
                 placeholder="Información adicional, contexto, horarios preferidos, etc."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900 placeholder-gray-500 resize-none"
               />
             </div>
           </div>
@@ -293,7 +303,7 @@ export default function NuevaOrdenPage() {
                 multiple
                 accept="image/*"
                 onChange={handleImageChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Puedes subir múltiples imágenes para documentar el problema
@@ -307,14 +317,14 @@ export default function NuevaOrdenPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {formData.imagenes.map((file, index) => (
                     <div key={index} className="relative">
-                      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
                         <span className="text-2xl">📷</span>
                       </div>
                       <p className="text-xs text-gray-600 mt-1 truncate">{file.name}</p>
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
                       >
                         ×
                       </button>
@@ -331,7 +341,7 @@ export default function NuevaOrdenPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-3 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="px-6 py-3 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium"
             disabled={loading}
           >
             Cancelar
@@ -339,7 +349,7 @@ export default function NuevaOrdenPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {loading ? (
               <div className="flex items-center space-x-2">
